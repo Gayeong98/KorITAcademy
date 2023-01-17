@@ -86,3 +86,9 @@ INSERT INTO Reservation(reservationDate, roomNumber) VALUES ('1999-02-10', 1004)
 UPDATE Reservation SET roomNumber = 502 WHERE roomNumber IS NULL;
 UPDATE Reservation SET reservationDate = '2023-01-30' WHERE name = '김철수';
 UPDATE Reservation SET roomNumber = 1001;
+
+# 데이터 삭제
+# - DELETE
+# DELETE FROM 테이블명 [WHERE 컬럼 = 값]
+
+DELETE FROM Reservation WHERE id = 7;
