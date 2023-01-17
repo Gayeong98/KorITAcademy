@@ -27,14 +27,18 @@ CREATE TABLE Board(
     boardWriter INT NOT NULL
 );
 
-### DML ###
+# User 레코드를 삽입
+# 아이디는 자동값을 그대로 사용, 비밀번호는 'P!ssw0rd', 이름 '고길동', 전화번호는 '010-4488-9944'인 데이터를 생성
 
-# INSERT
-# - 데이터 삽입
-# INSERT INTO 테이블명(컬럼명1, 컬럼명2, ...) VALUES (값1, 값2, ...);
-# INSERT INTO 테이블명 VALUES (값1, 값2, ...);
-# 각 컬럼에 매칭되는 값을 순서에 맞게 작성하여야 함
+# -- 회원가입 할 때 사용 -- 
+INSERT INTO User(password, name, telNumber) VALUES ('P!ssw0rd', '고길동', '010-4488-9944');
 
-INSERT INTO Reservation(name, reserveDate, roomNumber) VALUES ('김철수', '2023-01-17', 3134);
+SELECT * FROM User; # 테이블 확인
 
+# User 테이블에서 이름이 '고길동'인 레코드의 비밀번호를 'qwer1234!!'로 수정
 
+# -- 각종 회원정보 수정할 때 사용 --
+UPDATE User SET password = 'qwer1234!!' WHERE name = '고길동';
+
+# User 테이블에서 id가 1인 레코드를 삭제
+DELETE FROM User WHERE id = 1;
