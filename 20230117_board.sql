@@ -41,4 +41,7 @@ SELECT * FROM User; # 테이블 확인
 UPDATE User SET password = 'qwer1234!!' WHERE name = '고길동';
 
 # User 테이블에서 id가 1인 레코드를 삭제
+
+# 실제로는 잘 하지 않는 방법
 DELETE FROM User WHERE id = 1;
+
