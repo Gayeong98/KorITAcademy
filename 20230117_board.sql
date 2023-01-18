@@ -73,3 +73,7 @@ SELECT * FROM Board WHERE boardContent LIKE '%반갑습니다%';
 
 # 게시물 제목 + 내용에 '안녕히가세요'가 포함된 게시글 보기
 SELECT * FROM Board WHERE boardTitle LIKE '%안녕히가세요%'  OR boardContent LIKE '%안녕히가세요%';
+
+SELECT * FROM Board;
+
+SELECT * FROM Board WHERE boardTitle LIKE '%%';
