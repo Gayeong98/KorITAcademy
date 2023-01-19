@@ -77,3 +77,15 @@ SELECT * FROM Board WHERE boardTitle LIKE '%안녕히가세요%'  OR boardConten
 SELECT * FROM Board;
 
 SELECT * FROM Board WHERE boardTitle LIKE '%%';
+
+# board 테이블에서 boareWriter가 1이거나 2인 레코드에서 모든 컬럼 선택
+SELECT * FROM Board WHERE boardWriter = 1 OR boardWriter = 2;
+SELECT * FROM Board WHERE boardWriter IN (1,2);
+
+# Board 테이블에서 boardDate가 2023-01-03부터 2023-01-10까지 레코드에서 모든 컬럼을 선택
+SELECT * FROM Board WHERE boardDate BETWEEN '2023-01-03' AND '2023-01-10';
+
+# Board 테이블에서 작성일자가 1월달인 레코드에서 모든 컬럼을 선택
+SELECT * FROM Board WHERE boardDate LIKE '____-01-__';
+SELECT * FROM Board WHERE boardDate LIKE '%-01-%';
+SELECT * FROM Board WHERE boardDate BETWEEN '2023-01-01' AND '2023-01-31';
