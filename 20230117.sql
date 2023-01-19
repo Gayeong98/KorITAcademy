@@ -324,3 +324,7 @@ INSERT INTO Room VALUES (2901, 28, 'VIP');
 
 INSERT INTO Reservation2(name, reservationDate, roomNumber)
 VALUES('김철수', '2023-01-24', 2901);
+
+SELECT * FROM Reservation2;
+
+DELETE FROM Room WHERE roomNumber = 2901;
