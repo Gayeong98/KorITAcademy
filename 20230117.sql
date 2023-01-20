@@ -315,6 +315,8 @@ CREATE TABLE Reservation2 (
     REFERENCES Room (roomNumber)
 );
 
+DROP TABLE Reservation2;
+
 # 참조 제약조건을 설정하면 참조하는 테이블에 해당 컬럼의 값이 존재해야 참조할 수 있음
 
 INSERT INTO Reservation(name, reservationDate, roomNumber)
@@ -328,3 +330,138 @@ VALUES('김철수', '2023-01-24', 2901);
 SELECT * FROM Reservation2;
 
 DELETE FROM Room WHERE roomNumber = 2901;
+
+# ON DELETE, ON UPDATE
+# 참조키로 지정된 필드에서 참조하는 데이터가 변경되거나 삭제되었을 때 대처를 설정할 수 있도록 함
+
+CREATE TABLE Reservation3 (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    reservationDate DATE NOT NULL,
+    note TEXT,
+    roomNumber INT,
+    # CASCADE 옵션 : 참조하는 데이터가 변경되거나 삭제되면 참조테이블에서도 삭제와 수정이 같이 이루어짐
+    CONSTRAINT reservation3_FK FOREIGN KEY (roomNumber)
+    REFERENCES Room (roomNumber)
+    # ON UPDATE CASCADE
+    # ON DELETE CASCADE
+    
+    # SET NULL 옵션 : 참조하는 데이터가 변경되거나 삭제되면 참조키가 설정된 필드의 값이 NULL로 변경됨
+    # ON UPDATE SET NULL
+    # ON DELETE SET NULL
+    
+    # NO ACTION 옵션 :  참조하는 데이터가 변경되거나 삭제되어도 아무런 변화가 일어나지 않음
+    # MySQL에서는 RESTRICT와 동일
+    # ON UPDATE NO ACTION
+    # ON DELETE NO ACTION
+	
+    # SET DEFAULT 옵션 :  참조하는 데이터가 변경되거나 삭제되면 기본값으로 지정한 데이터로 변경됨
+    # InnoDB Engin에서는 불가능
+    # ON UPDATE SET DEFAULT
+    # ON DELETE SET DEFAULT
+    
+    # RESTRICT 옵션 : 참조하는 데이터가 변경되거나 삭제 불가능
+    # 기본값
+    # ON UPDATE SET RESTRICT
+    # ON DELETE SET RESTRICT
+);
+
+DROP TABLE Reservation3;
+
+INSERT INTO Room VALUES (2901, 28, 'VIP');
+INSERT INTO Room VALUES (2902, 28, 'VIP');
+
+INSERT INTO Reservation3(name, reservationDate, roomNumber)
+VALUES ('이영희', '2023-01-24', NULL);
+UPDATE Reservation3 SET roomNumber = 2902 WHERE name = '김철수';
+
+SELECT * FROM Reservation3;
+SELECT * FROM Room;
+
+UPDATE Room SET roomNumber = 2903 WHERE roomNumber = 2902;
+DELETE FROM Room WHERE roomNumber = 2902;
+
+# JOIN
+# 여러 테이블을 조합하여 하나의 테이블로 표현해주는 방법
+# 일반적으로 SELECT 구문에 사용됨
+
+# INNER JOIN
+# ON 절의 조건을 만족하는 데이터만 가져옴
+# SELECT 컬럼명 FROM 테이블명1 INNER JOIN 테이블명2 ON 조건
+
+SELECT * FROM Reservation3 INNER JOIN Room ON Reservation3.roomNumber = Room.roomNumber;
+
+# MySQL에서는 INNER JOIN 구문을 , 로 대체하고 ON을 WHERE로 대체해서 사용 가능
+
+SELECT * FROM Reservation3, Room WHERE Reservation3.roomNumber = Room.roomNumber;
+
+# FROM 절에 두 개 이상의 테이블을 사용할 때 Alias를 사용해서 별칭을 부여할 수 있음
+SELECT * FROM Reservation3 AS RV, Room AS RM WHERE RV.roomNumber = RM. roomNumber;
+
+# 두 테이블 이상을 FROM절에서 사용할 때는
+# 선택할 컬럼명 앞에 어떤 테이블의 컬럼인지를 직접 지정해 주는 것이 좋음
+# 동일한 컬럼명이 각 테이블에 존재하면 쿼리는 어떤 테이블의 컬럼인지 구분하지 못함
+SELECT id, name, reservationDate, note, RM.roomNumber, roomSize, roomName
+FROM Reservation3 AS RV, Room AS RM 
+WHERE RV.roomNumber = RM.roomNumber;
+
+# LEFT JOIN
+# 왼쪽 테이블에 참조키를 기준으로 JOIN 결과를 나열
+
+# SELECT 컬럼명 FROM 테이블명1 LEFT JOIN 테이블명2 ON 조건 [ WHERE 조건 ]
+SELECT * FROM Reservation3 AS RV LEFT JOIN Room AS RM ON RV.roomNumber = RM.roomNumber;
+
+# RIGHT JOIN
+# 오른쪽 테이블의 참조키를 기준으로 JOIN 결과를 나열
+
+# SELECT 컬럼명 FROM 테이블명1 RIGHT JOIN 테이블명2 ON 조건 [ WHERE 조건 ]
+SELECT * FROM Reservation3 AS RV RIGHT JOIN Room AS RM ON RV.roomNumber = RM.roomNumber;
+
+# 서브 쿼리
+# 테이블의 검색 결과를 조건으로 사용하거나 FROM절에서 새로운 테이블로 사용할 수 있도록 한 것
+
+# WHERE 절에서 사용하는 방법
+
+# SELECT 컬럼명 FROM 테이블명A
+# WHERE 컬럼명 = (SELECT 컬럼명 FROM 테이블명B WHERE 조건)
+# 또는 WHERE 컬럼명 IN (SELECT 컬럼명 FROM 테이블명B WHERE 조건)
+
+SELECT * FROM Reservation3
+WHERE roomNumber = (
+	SELECT roomNumber
+    FROM Room
+    WHERE roomNumber = 2902
+);
+
+SELECT * FROM Reservation3
+WHERE roomNumber IN (
+	SELECT roomNumber
+    FROM Room
+);
+
+# FROM절에서 사용하는 방법
+# SELECT 컬럼명 
+# FROM (
+#	SELECT 컬럼명 FROM 테이블 WHERE 조건 
+#	)
+# WHERE 조건;
+
+# VIEW
+# 미리 선언된 쿼리를 사용해서 가상의 테이블을 만들어 보여주는 것
+
+# CREATE VIEW 뷰이름 AS SELECT 쿼리
+CREATE VIEW ReservationInfo AS
+SELECT id, name, reservationDate, note, RM.roomNumber, roomSize, roomName
+FROM Reservation3 AS RV, Room AS RM 
+WHERE RV.roomNumber = RM.roomNumber;
+
+SELECT * FROM ReservationInfo; # WHERE name = '김철수';
+
+SELECT * FROM (
+	SELECT id, name, reservationDate, note, RM.roomNumber, roomSize, roomName
+	FROM Reservation3 AS RV, Room AS RM 
+	WHERE RV.roomNumber = RM.roomNumber
+) AS T
+WHERE name = '김철수';
+
+DROP VIEW ReservationInfo;

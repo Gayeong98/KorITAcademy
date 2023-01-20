@@ -89,3 +89,50 @@ SELECT * FROM Board WHERE boardDate BETWEEN '2023-01-03' AND '2023-01-10';
 SELECT * FROM Board WHERE boardDate LIKE '____-01-__';
 SELECT * FROM Board WHERE boardDate LIKE '%-01-%';
 SELECT * FROM Board WHERE boardDate BETWEEN '2023-01-01' AND '2023-01-31';
+
+DROP TABLE Board;
+
+CREATE TABLE Board (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    boardTitle VARCHAR(200) NOT NULL,
+    boardContent TEXT NOT NULL,
+	boardDateTime DATETIME NOT NULL, 
+    boardLike INT DEFAULT 0,
+    boardWriter INT NOT NULL,
+    
+    CONSTRAINT Board_FK FOREIGN KEY (boardWriter)
+    REFERENCES User (id)
+);
+
+SELECT * FROM User;
+SELECT * FROM Board;
+
+INSERT INTO User (password, name, telNumber) VALUES ('P!ssword', '김철수', '010-1111-4444');
+INSERT INTO User (password, name, telNumber) VALUES ('P!ssword', '홍길동', '010-2222-8888');
+INSERT INTO User (password, name, telNumber) VALUES ('P!ssword', '고길동', '010-3333-1212');
+
+INSERT INTO Board(boardTitle, boardContent, boardDateTime, boardWriter)
+VALUES ('Hello World!', 'Hello MySQL', now(), 2);
+
+INSERT INTO Board(boardTitle, boardContent, boardDateTime, boardWriter)
+VALUES ('Hello World!@', 'Hello MySQL!', now(), 2);
+
+INSERT INTO Board(boardTitle, boardContent, boardDateTime, boardWriter)
+VALUES ('Good bye World!', 'Good bye MySQL!', now(), 3);
+
+# 게시물을 작성한 경험이 있는 유저의 이름과 전화번호, 작성한 게시물 제목을 구하시오
+SELECT U.name, U.telNumber, B.boardTitle
+FROM User AS U, Board AS B 
+WHERE U.id = B.boardWriter;
+
+# 게시물 작성 경험이 있는 유저의 이름과 전화번호를 구하시오
+SELECT U.name, U.telNumber
+FROM USER AS U, Board AS B
+WHERE U.id = B.boardWriter;
+
+SELECT name, telNumber
+FROM User
+WHERE id IN (
+	SELECT DISTINCT boardWriter
+    FROM Board
+);
