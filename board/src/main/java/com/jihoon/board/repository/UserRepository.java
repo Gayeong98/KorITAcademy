@@ -8,4 +8,7 @@ import com.jihoon.board.entity.UserEntity;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, String> {
     
+    public boolean existsByEmail(String email);
+    public boolean existsByTelNumber(String telNumber);
+
 }
