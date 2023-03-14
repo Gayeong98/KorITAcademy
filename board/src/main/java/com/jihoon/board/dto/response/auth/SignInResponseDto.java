@@ -16,6 +16,7 @@ public class SignInResponseDto {
     private String address;
     private String profile;
     private String token;
+    private int expiredTime;
 
     public SignInResponseDto(UserEntity userEntity, String token) {
         this.email = userEntity.getEmail();
@@ -24,5 +25,6 @@ public class SignInResponseDto {
         this.address = userEntity.getAddress();
         this.profile = userEntity.getProfile();
         this.token = token;
+        this.expiredTime = 3600000;
     }
 }
